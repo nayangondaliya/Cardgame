@@ -1,0 +1,61 @@
+<div class="list row mt-3">
+    <div class="col-md-3 text-center">
+        <h2>Sent Requests</h2>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search people by name" [(ngModel)]="name"
+                (keyup)="searchPeople(name)" />
+        </div>
+    </div>
+    <div class="col-md-3 text-center">
+        <h2>Pending Requests</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="row mt-3" *ngFor="let sFriend of sentRequests">
+            <div class="col-md-3" style="float: left;">
+                <img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
+            </div>
+            <div class="col-md-5 profile-name">
+                <span>{{sFriend.name}}</span>
+                <button class="btn btn-primary" (click)="cancelRequest(sFriend.id)">Cancel</button>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="row mt-3" *ngFor="let user of people">
+            <div class="col-md-3" style="float: left;">
+                <img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
+            </div>
+            <div class="col-md-9 profile-name">
+                <span>{{user.name}}</span>
+                <button class="btn btn-primary" (click)="addFriend(user.id)">Add Friend</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="row mt-3" *ngFor="let pFriend of pendingRequests">
+            <div class="col-md-3"></div>
+            <div class="col-md-2" style="float: left;">
+                <img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
+            </div>
+            <div class="col-md-5 profile-name">
+                <span>{{pFriend.name}}</span>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" (click)="acceptRequest(pFriend.id)">Accept</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" (click)="cancelPendingRequest(pFriend.id)">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

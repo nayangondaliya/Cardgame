@@ -12,22 +12,26 @@ export class HomeComponent implements OnInit {
 
   toastr: any;
   cards : any;
+  friends: any;
   currentCard = null;
-  currentIndex = -1;
-  
+  currentCardIndex = -1;
+  currentFriend = null;
+  currentFriendIndex = -1;
+
   constructor(private apiService: ApiService, private tokenService: TokenStorageService, private commonService: CommonService) {
     this.toastr = this.commonService.getToaster();
   }
 
   ngOnInit(): void {
-    this.retrieveCards();
+    this.retrieveDashboardDetail();
   }
 
-  retrieveCards(){
+  retrieveDashboardDetail(){
     let userId = this.tokenService.getUser().id;
     this.apiService.dashboard(userId).subscribe(
       data => {
         this.cards = data.cards;
+        this.friends = data.friends;
       },
       err => {
         this.toastr.error("Please reload page", "Failed");
@@ -37,6 +41,11 @@ export class HomeComponent implements OnInit {
 
   setActiveCard(card, index) {
     this.currentCard = card;
-    this.currentIndex = index;
+    this.currentCardIndex = index;
+  }
+
+  setActiveFriend(friend, index) {
+    this.currentFriend = friend;
+    this.currentFriendIndex = index;
   }
 }

@@ -10,9 +10,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
-import { ProfileComponent } from './components/profile/profile.component';
 import { CardtradeComponent } from './components/cardtrade/cardtrade.component';
 import { HomeComponent } from './components/home/home.component';
+import { PeopleComponent } from './components/people/people.component';
 
 import { authInterceptorProviders } from './helpers/app.interceptor';
 
@@ -21,9 +21,9 @@ import { authInterceptorProviders } from './helpers/app.interceptor';
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    ProfileComponent,
     CardtradeComponent,
-    HomeComponent
+    HomeComponent,
+    PeopleComponent
   ],
   imports: [
     BrowserModule,
