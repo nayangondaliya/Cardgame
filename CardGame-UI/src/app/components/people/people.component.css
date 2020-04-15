@@ -4,8 +4,8 @@
   }
 
   .profile-img-card {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 80px;
     display: block;
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -13,10 +13,12 @@
   }
 
   .profile-name{
+    float: left;
+    margin-top: 0.5vh;
+    left: 15px;
     display: grid;
     font-weight: 500;
   }
-
   .profile-name > button{
     margin-top: 20px;
   }

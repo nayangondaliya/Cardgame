@@ -11,5 +11,8 @@ db.DB = dbConfig.DB;
 
 db.user = require("./user.model");
 db.card = require("./card.model");
+db.friendrequest = require("./friendrequest.model");
+db.friend = require("./friend.model");
+db.traderequest = require("./traderequest.model");
 
 module.exports = db;

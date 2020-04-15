@@ -13,19 +13,19 @@
 
     <ul class="navbar-nav mr-auto" routerLinkActive="active" *ngIf="isLoggedIn">
       <li class="nav-item">
-        <a href="/home" class="nav-link" routerLink="home">Home </a>
+        <a class="nav-link" routerLink="home">Home </a>
       </li>
       <li class="nav-item">
-        <a href="/profile" class="nav-link" routerLink="profile">Profile</a>
+        <a class="nav-link" routerLink="people">People</a>
       </li>
       <li class="nav-item">
-        <a href="/mod" class="nav-link" routerLink="trade">Trade</a>
+        <a class="nav-link" routerLink="trade">Trade</a>
       </li>
     </ul>
 
     <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
       <li class="nav-item">
-        <a href="/profile" class="nav-link" routerLink="profile">Hello, {{ username }}</a>
+        <a href="#" class="nav-link" routerLink="profile">Hello, {{ username }}</a>
       </li>
       <li class="nav-item">
         <a href class="nav-link" (click)="logout()">LogOut</a>
