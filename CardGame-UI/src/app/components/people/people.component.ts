@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api-service';
 import { TokenStorageService } from '../../services/token-storage-service';
 import { CommonService } from '../../services/common.service';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-people',
@@ -17,16 +18,20 @@ export class PeopleComponent implements OnInit {
   sentRequests: any = [];
   pendingRequests: any = [];
   friends: any = [];
+  subscription: Subscription;
+  intervalId: number;
+  intervaltime: number = 1000;
 
   constructor(private apiService: ApiService, private tokenService: TokenStorageService, private commonService: CommonService) {
     this.toastr = this.commonService.getToaster();
   }
 
   ngOnInit(): void {
-    this.getrequests();
+    const source = interval(this.intervaltime);
+    this.subscription = source.subscribe(val => this.getDashboardDetail());
   }
 
-  getrequests() {
+  getDashboardDetail() {
     const userId = this.tokenService.getUser().id;
 
     this.apiService.getrequests(userId).subscribe(
@@ -71,6 +76,8 @@ export class PeopleComponent implements OnInit {
   addFriend(friendId) {
     const userId = this.tokenService.getUser().id;
     const isFriend = this.friends.filter(x => x.id == friendId);
+    const isPending = this.pendingRequests.filter(x => x.id == friendId);
+    const isSent = this.sentRequests.filter(x => x.id == friendId);
 
     if (userId == friendId) {
       this.toastr.error("Cant' send request to self", 'Failed');
@@ -80,12 +87,19 @@ export class PeopleComponent implements OnInit {
       this.toastr.error("You are already friends", 'Failed');
       return;
     }
+    else if (isPending.length > 0) {
+      this.toastr.error("User's request is pending", 'Failed');
+      return;
+    }
+    else if (isSent.length > 0) {
+      this.toastr.error("Already sent the request", 'Failed');
+      return;
+    }
 
     this.apiService.sendrequest(userId, friendId).subscribe(
       data => {
         if (data.code == 'R01') {
           this.toastr.success(data.message, 'Success');
-          this.getrequests();
         }
         else
           this.toastr.error(data.message, 'Failed');
@@ -103,7 +117,6 @@ export class PeopleComponent implements OnInit {
       data => {
         if (data.code == 'R03') {
           this.toastr.success(data.message, 'Success');
-          this.getrequests();
         }
         else
           this.toastr.error(data.message, 'Failed');
@@ -121,7 +134,6 @@ export class PeopleComponent implements OnInit {
       data => {
         if (data.code == 'R02') {
           this.toastr.success(data.message, 'Success');
-          this.getrequests();
         }
         else
           this.toastr.error(data.message, 'Failed');
@@ -132,14 +144,13 @@ export class PeopleComponent implements OnInit {
     );
   }
 
-  cancelPendingRequest(friendId){
+  cancelPendingRequest(friendId) {
     const userId = this.tokenService.getUser().id;
 
     this.apiService.cancelpendingrequest(userId, friendId).subscribe(
       data => {
         if (data.code == 'R02') {
           this.toastr.success(data.message, 'Success');
-          this.getrequests();
         }
         else
           this.toastr.error(data.message, 'Failed');

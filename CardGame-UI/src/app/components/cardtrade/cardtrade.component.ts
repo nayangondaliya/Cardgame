@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api-service';
 import { TokenStorageService } from '../../services/token-storage-service';
 import { CommonService } from '../../services/common.service';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cardtrade',
@@ -25,6 +26,9 @@ export class CardtradeComponent implements OnInit {
   senderInfo: any = [];
   receiverInfo: any = [];
   isView: boolean = false;
+  subscription: Subscription;
+  intervalId: number;
+  intervaltime: number = 1000;
 
   constructor(private apiService: ApiService, private tokenService: TokenStorageService, private commonService: CommonService) {
     this.toastr = this.commonService.getToaster();
@@ -32,7 +36,8 @@ export class CardtradeComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.tokenService.getUser().id;
-    this.getDashboardDetail();
+    const source = interval(this.intervaltime);
+    this.subscription = source.subscribe(val => this.getDashboardDetail());
     this.resettradeinfo();
   }
 
@@ -61,7 +66,6 @@ export class CardtradeComponent implements OnInit {
       data => {
         if (data.code == "000") {
           this.toastr.success(data.message, "Success");
-          this.getDashboardDetail();
         }
         else {
           this.toastr.error(data.message, "Failed");
@@ -79,7 +83,6 @@ export class CardtradeComponent implements OnInit {
       data => {
         if (data.code == "000") {
           this.toastr.success(data.message, "Success");
-          this.getDashboardDetail();
         }
         else {
           this.toastr.error(data.message, "Failed");
@@ -134,7 +137,6 @@ export class CardtradeComponent implements OnInit {
       data => {
         if (data.code == "000") {
           this.toastr.success(data.message, "Success");
-          this.getDashboardDetail();
           this.setActiveFriend({}, -1);
         }
         else {
@@ -191,6 +193,5 @@ export class CardtradeComponent implements OnInit {
   {
     this.isView = false;
     this.setActiveFriend({}, -1);
-    this.getDashboardDetail();
   }
 }

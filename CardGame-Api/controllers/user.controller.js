@@ -110,7 +110,6 @@ exports.dashBoard = (req, res) => {
                 return;
             }
 
-
             data.forEach(element => {
                 let friendsCard = [];
 
@@ -119,6 +118,15 @@ exports.dashBoard = (req, res) => {
                         'id': card._id,
                         'name': card.name
                     });
+                });
+
+                friendsCard = friendsCard.sort(function (a, b) {
+                    var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                    if (nameA < nameB) //sort string ascending
+                        return -1
+                    if (nameA > nameB)
+                        return 1
+                    return 0
                 });
 
                 friendsInfo.push({
@@ -184,7 +192,6 @@ exports.dashBoard = (req, res) => {
                         return;
                     }
 
-
                     data.forEach(element => {
                         let friendsCard = [];
                         element.cards.forEach(card => {
@@ -194,11 +201,38 @@ exports.dashBoard = (req, res) => {
                             });
                         });
 
+                        friendsCard = friendsCard.sort(function (a, b) {
+                            var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0
+                        });
+
                         friendsInfo.push({
                             'id': element._id,
                             'name': element.username,
                             'cards': friendsCard
                         });
+                    });
+
+                    friendsInfo = friendsInfo.sort(function (a, b) {
+                        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                        if (nameA < nameB) //sort string ascending
+                            return -1
+                        if (nameA > nameB)
+                            return 1
+                        return 0
+                    });
+
+                    cardsInfo = cardsInfo.sort(function (a, b) {
+                        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                        if (nameA < nameB) //sort string ascending
+                            return -1
+                        if (nameA > nameB)
+                            return 1
+                        return 0
                     });
 
                     res.status(200).send({
@@ -508,6 +542,23 @@ exports.getrequests = (req, res) => {
                             }
                         }
 
+                        pendingRequests = pendingRequests.sort(function (a, b) {
+                            var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0
+                        });
+
+                        sentRequests = sentRequests.sort(function (a, b) {
+                            var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0
+                        });
                         return res.status(200).send({ message: "Success", code: "000", sentRequests: sentRequests, pendingRequests: pendingRequests });
                     });
             }
