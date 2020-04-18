@@ -170,7 +170,7 @@ exports.dashboard = (req, res) => {
                                                                 return 1
                                                             return 0
                                                         });
-                                                        
+
                                                         friendsInfo.push({
                                                             'id': element._id,
                                                             'name': element.username,
@@ -266,7 +266,7 @@ exports.dashboard = (req, res) => {
                                                                         return 1
                                                                     return 0
                                                                 });
-                                            
+
                                                                 cardsInfo = cardsInfo.sort(function (a, b) {
                                                                     var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
                                                                     if (nameA < nameB) //sort string ascending
@@ -299,6 +299,7 @@ exports.dashboard = (req, res) => {
 
 exports.cancel = (req, res) => {
     const tradeId = req.body.tradeId;
+    const io = req.app.get('io');
 
     TradeRequest.findById({ _id: mongoose.Types.ObjectId(tradeId) })
         .exec((err, data) => {
@@ -322,8 +323,10 @@ exports.cancel = (req, res) => {
                                 .exec((err, data) => {
                                     if (err)
                                         return res.status(200).send({ message: "System Error", code: "E01" });
-                                    else
+                                    else {
+                                        io.emit('newTrade');
                                         return res.status(200).send({ message: "Success", code: "000" });
+                                    }
                                 });
                         }
                     });
@@ -336,6 +339,7 @@ exports.send = (req, res) => {
     const receiverId = req.body.receiverId;
     const senderCards = req.body.senderCards;
     const receiverCards = req.body.receiverCards;
+    const io = req.app.get('io');
 
     const traderequest = new TradeRequest({
         senderId: senderId,
@@ -354,8 +358,10 @@ exports.send = (req, res) => {
                 .exec((err, data) => {
                     if (err)
                         return res.status(200).send({ message: "System Error", code: "E01" });
-                    else
-                        return res.status(200).send({ message: "success", code: "000" }); x
+                    else {
+                        io.emit('newTrade');
+                        return res.status(200).send({ message: "success", code: "000" });
+                    }
                 });
         }
     });
@@ -363,6 +369,7 @@ exports.send = (req, res) => {
 
 exports.accept = (req, res) => {
     const tradeId = req.body.tradeId;
+    const io = req.app.get('io');
 
     TradeRequest.findById({ _id: mongoose.Types.ObjectId(tradeId) })
         .exec((err, data) => {
@@ -407,8 +414,10 @@ exports.accept = (req, res) => {
                                                         .exec((err, data) => {
                                                             if (err)
                                                                 return res.status(200).send({ message: "System error", code: "E01" });
-                                                            else
-                                                                return res.status(200).send({ message: "Success", code: "000" });
+                                                            else {
+                                                                io.emit('newTrade');
+                                                                return res.status(200).send({ message: "success", code: "000" });
+                                                            }
                                                         });
                                                 }
                                             });
@@ -480,7 +489,7 @@ exports.view = (req, res) => {
                 sender.id = data[0]._id;
 
                 data[0].cards.forEach(element => {
-                    sender.cards.push({'name' : element.name});
+                    sender.cards.push({ 'name': element.name });
                 });
 
                 TradeRequest.aggregate([
@@ -540,7 +549,7 @@ exports.view = (req, res) => {
                             receiver.id = data[0]._id;
 
                             data[0].cards.forEach(element => {
-                                receiver.cards.push({'name' : element.name});
+                                receiver.cards.push({ 'name': element.name });
                             });
 
                             return res.status(200).send({ message: "Success", code: "000", sender: sender, receiver: receiver });

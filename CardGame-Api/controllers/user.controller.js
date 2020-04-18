@@ -249,6 +249,7 @@ exports.dashBoard = (req, res) => {
 exports.addfriend = (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friendId;
+    const io = req.app.get('io');
 
     if (userId == friendId)
         return res.status(200).send({ message: "Can't send request to self", code: "U03" });
@@ -268,8 +269,10 @@ exports.addfriend = (req, res) => {
                         if (err) {
                             return res.status(200).send({ message: err || "System Error", code: "E01" });
                         }
-                        else
+                        else {
+                            io.emit('newFriend');
                             return res.status(200).send({ message: "Request sent successfully", code: "R01" });
+                        }
                     });
                 }
                 else
@@ -279,8 +282,10 @@ exports.addfriend = (req, res) => {
                         .exec((err, data) => {
                             if (err)
                                 return res.status(200).send({ message: err || "System Error", code: "E01" });
-                            else
+                            else {
+                                io.emit('newFriend');
                                 return res.status(200).send({ message: "Request sent successfully", code: "R01" });
+                            }
                         });
             }
         });
@@ -390,6 +395,7 @@ exports.searchuser = (req, res) => {
 exports.acceptrequest = (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friendId;
+    const io = req.app.get('io');
 
     FriendRequest.findOneAndUpdate({ "userId": mongoose.Types.ObjectId(friendId) },
         { $pull: { people: mongoose.Types.ObjectId(userId) } },
@@ -414,6 +420,7 @@ exports.acceptrequest = (req, res) => {
                                         return res.status(200).send({ message: "System Error", code: "E01" });
                                     }
                                     else {
+                                        io.emit('newFriend');
                                         return res.status(200).send({ message: "Request accepted", code: "R03" });
                                     }
                                 });
@@ -426,6 +433,7 @@ exports.acceptrequest = (req, res) => {
                                         if (frerr)
                                             return res.status(200).send({ message: err || "System Error", code: "E01" });
                                         else {
+                                            io.emit('newFriend');
                                             return res.status(200).send({ message: "Request accepted", code: "R03" });
                                         }
                                     });
@@ -439,6 +447,7 @@ exports.acceptrequest = (req, res) => {
 exports.cancelrequest = (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friendId;
+    const io = req.app.get('io');
 
     FriendRequest.findOneAndUpdate({ "userId": mongoose.Types.ObjectId(userId) },
         { $pull: { people: mongoose.Types.ObjectId(friendId) } },
@@ -446,8 +455,11 @@ exports.cancelrequest = (req, res) => {
         .exec((err, data) => {
             if (err)
                 return res.status(200).send({ message: "System Error", code: "E01" });
-            else
+            else {
+                io.emit('newFriend');
                 return res.status(200).send({ message: "Request cancelled", code: "R02" });
+            }
+
         });
 };
 
@@ -568,14 +580,17 @@ exports.getrequests = (req, res) => {
 exports.cancelPendingrequest = (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friendId;
-
+    const io = req.app.get('io');
+    
     FriendRequest.findOneAndUpdate({ "userId": mongoose.Types.ObjectId(friendId) },
         { $pull: { people: mongoose.Types.ObjectId(userId) } },
         { new: true, useFindAndModify: false })
         .exec((err, data) => {
             if (err)
                 return res.status(200).send({ message: "System Error", code: "E01" });
-            else
+            else {
+                io.emit('newFriend');
                 return res.status(200).send({ message: "Request cancelled", code: "R02" });
+            }
         });
 };

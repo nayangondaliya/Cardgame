@@ -12,17 +12,21 @@ export class AppComponent {
   isLoggedIn = false;
   username: string;
 
-  constructor(private tokenStorageService: TokenStorageService) 
-  {
+  constructor(private tokenStorageService: TokenStorageService) {
+    this.verifyLogin();
+  }
+
+  ngOnInit() {
+    this.verifyLogin();
+  }
+
+  verifyLogin() {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
 
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
       this.username = user.username;
     }
-  }
-
-  ngOnInit() { 
   }
 
   logout() {
