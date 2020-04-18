@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api-service';
 import { TokenStorageService } from '../../services/token-storage-service';
 import { CommonService } from '../../services/common.service';
-import { interval, Subscription } from 'rxjs';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-cardtrade',
@@ -26,22 +26,27 @@ export class CardtradeComponent implements OnInit {
   senderInfo: any = [];
   receiverInfo: any = [];
   isView: boolean = false;
-  subscription: Subscription;
-  intervalId: number;
-  intervaltime: number = 1000;
+  socket;
 
   constructor(private apiService: ApiService, private tokenService: TokenStorageService, private commonService: CommonService) {
     this.toastr = this.commonService.getToaster();
+    this.socket = io("http://localhost:3000");
   }
 
   ngOnInit(): void {
     this.userId = this.tokenService.getUser().id;
-    const source = interval(this.intervaltime);
-    this.subscription = source.subscribe(val => this.getDashboardDetail());
     this.resettradeinfo();
+    
+    this.retrieveDashboardDetail();
+    this.socket.on('newFriend', () => {
+      this.retrieveDashboardDetail();
+    });
+    this.socket.on('newTrade', () => {
+      this.retrieveDashboardDetail();
+    });
   }
 
-  getDashboardDetail() {
+  retrieveDashboardDetail() {
     this.apiService.tradedashboard(this.userId).subscribe(
       data => {
         if (data.code == "000") {

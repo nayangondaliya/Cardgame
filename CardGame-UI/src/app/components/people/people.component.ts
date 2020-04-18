@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api-service';
 import { TokenStorageService } from '../../services/token-storage-service';
 import { CommonService } from '../../services/common.service';
-import { interval, Subscription } from 'rxjs';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-people',
@@ -18,20 +18,21 @@ export class PeopleComponent implements OnInit {
   sentRequests: any = [];
   pendingRequests: any = [];
   friends: any = [];
-  subscription: Subscription;
-  intervalId: number;
-  intervaltime: number = 1000;
+  socket;
 
   constructor(private apiService: ApiService, private tokenService: TokenStorageService, private commonService: CommonService) {
     this.toastr = this.commonService.getToaster();
+    this.socket = io("http://localhost:3000");
   }
 
   ngOnInit(): void {
-    const source = interval(this.intervaltime);
-    this.subscription = source.subscribe(val => this.getDashboardDetail());
+    this.retrieveDashboardDetail();
+    this.socket.on('newFriend', () => {
+      this.retrieveDashboardDetail();
+    });
   }
 
-  getDashboardDetail() {
+  retrieveDashboardDetail() {
     const userId = this.tokenService.getUser().id;
 
     this.apiService.getrequests(userId).subscribe(

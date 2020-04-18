@@ -50,6 +50,6 @@ export class LoginComponent implements OnInit {
   redirectToHomePage()
   {
     if(this.tokenStorage.getToken())
-      window.location.href = "/home";
+      window.location.href = '/home';
   }
 }

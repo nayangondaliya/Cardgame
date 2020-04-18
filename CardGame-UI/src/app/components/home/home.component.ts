@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api-service';
 import { TokenStorageService } from '../../services/token-storage-service';
 import { CommonService } from '../../services/common.service';
-import { interval, Subscription } from 'rxjs';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-home',
@@ -18,17 +18,21 @@ export class HomeComponent implements OnInit {
   currentCardIndex = -1;
   currentFriend = null;
   currentFriendIndex = -1;
-  subscription: Subscription;
-  intervalId: number;
-  intervaltime: number = 1000;
+  socket;
 
   constructor(private apiService: ApiService, private tokenService: TokenStorageService, private commonService: CommonService) {
     this.toastr = this.commonService.getToaster();
+    this.socket = io("http://localhost:3000");
   }
 
   ngOnInit(): void {
-    const source = interval(this.intervaltime);
-    this.subscription = source.subscribe(val => this.retrieveDashboardDetail());
+    this.retrieveDashboardDetail();
+    this.socket.on('newFriend', () => {
+      this.retrieveDashboardDetail();
+    });
+    this.socket.on('newTrade', () => {
+      this.retrieveDashboardDetail();
+    });
   }
 
   retrieveDashboardDetail() {
@@ -52,9 +56,5 @@ export class HomeComponent implements OnInit {
   setActiveFriend(friend, index) {
     this.currentFriend = friend;
     this.currentFriendIndex = index;
-  }
-
-  ngOnDestroy() {
-    this.subscription && this.subscription.unsubscribe();
   }
 }

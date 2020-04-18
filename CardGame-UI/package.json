@@ -20,10 +20,11 @@
     "@angular/platform-browser-dynamic": "~9.1.1",
     "@angular/router": "~9.1.1",
     "@auth0/angular-jwt": "^4.0.0",
-    "jwt-decode": "^2.2.0",
     "ngx-toastr": "^12.0.1",
     "rxjs": "~6.5.4",
     "rxjs-compat": "^6.5.5",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },
