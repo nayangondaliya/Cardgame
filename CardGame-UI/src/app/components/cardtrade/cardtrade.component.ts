@@ -36,7 +36,7 @@ export class CardtradeComponent implements OnInit {
   ngOnInit(): void {
     this.userId = this.tokenService.getUser().id;
     this.resettradeinfo();
-    
+
     this.retrieveDashboardDetail();
     this.socket.on('newFriend', () => {
       this.retrieveDashboardDetail();
@@ -194,9 +194,10 @@ export class CardtradeComponent implements OnInit {
     }
   }
 
-  closeview()
-  {
+  closeview() {
     this.isView = false;
     this.setActiveFriend({}, -1);
+    this.resettradeinfo();
+    this.retrieveDashboardDetail();
   }
 }
