@@ -1,0 +1,22 @@
+.list {
+    text-align: left;
+    margin: auto;
+  }
+
+  .profile-img-card {
+    width: 60px;
+    height: 60px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+  }
+
+  .profile-name{
+    display: grid;
+    font-weight: 500;
+  }
+
+  .profile-name > button{
+    margin-top: 20px;
+  }
